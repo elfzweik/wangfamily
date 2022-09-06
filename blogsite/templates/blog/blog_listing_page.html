@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% load wagtailimages_tags wagtailcore_tags%}
+{% load like_tags %}
+
+
+{% block content %}
+
+    <!--{%block menu %}
+        <li class="has-children">
+            <a class="inactive" href="#" title="">标签</a>
+            <ul class="sub-menu">
+                {% for tag in tags%}
+                    <li><a href="{% slugurl 'tag' %}?{{tag.name}}">{{tag.name}}</a></li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endblock %} -->
+   
+    <!-- masonry
+    ================================================== -->
+    <section id="bricks">
+    
+        <div class="row masonry">
+
+            <!-- brick-wrapper -->
+            <div class="bricks-wrapper">
+
+                <div class="grid-sizer"></div>
+
+                <div class="brick entry featured-grid animate-this">
+                    <div class="entry-content">
+                        <div id="featured-post-slider" class="flexslider">
+                            <ul class="slides">
+                                {% for post in latest_posts %}
+                                    <li>
+                                        <div class="featured-post-slide">
+                                            {% if post.main_image %} 
+                                                {% image post.main_image width-700 as blog_img %}
+                                                <div class="post-background" style="background-image: url('{{blog_img.url}}'); {{blog_img.background_position_style}}">
+                                                </div>
+                                                <!--<a href="{{post.url}}" class="thumb-link">
+                                                    <img src="{{blog_img.url}}" alt="{{post.custom_title}}"> -->            
+                                                </a>
+                                            {% endif %}
+                                            <div class="overlay"></div>			   		
+
+                                            <div class="post-content">
+                                                <ul class="entry-meta">
+                                                    <li><a href="{{post.url}}" >Updated on {{post.update_date}}</a></li> 
+                                                    <li>
+                                                        <span class="cat-links">
+                                                            {% for tag in post.tags.all %}
+                                                                <span class="glyphicon glyphicon-tag"></span>
+                                                                <a href="{%slugurl 'tags' %}?tag={{ tag }}">{{tag}}, </a> 
+                                                            {% endfor %}
+                                                        </span>
+                                                    </li>				
+                                                </ul>	
+
+                                                <h1 class="slide-title"><a href="{{post.url}}" title="">{{post.custom_title}}</a></h1> 
+                                            </div> 				   					  
+                                        </div>
+                                    </li> <!-- /slide -->
+                                {% endfor %}
+                            
+                            </ul> <!-- end slides -->
+                        </div> <!-- end featured-post-slider -->        			
+                    </div> <!-- end entry content -->         		
+                </div>
+            
+            
+                {% for post in posts %}
+                
+                    <article class="brick entry format-standard animate-this">
+
+                        <div class="entry-thumb">
+                            {% if post.main_image %} 
+                                {% image post.main_image width-700 as blog_img %} 
+                                <a href="{{post.url}}" class="thumb-link">
+                                    <img src="{{blog_img.url}}" alt="{{post.custom_title}}">             
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div class="entry-text">
+                            <div class="entry-header">
+
+                                <div class="entry-meta">
+                                    <span class="cat-links">
+                                        {% for tag in post.tags.all %}
+                                            <span class="glyphicon glyphicon-tag"></span>    
+                                            <a href="{%slugurl 'tags' %}?tag={{ tag }}">{{ tag }}</a> 
+                                        {% endfor %} 
+                                    </span>			
+                                </div>
+        
+                                <h1 class="entry-title"><a href="{{post.url}}">{{post.custom_title}}</a></h1>
+                                
+                            </div>
+                                <div class="entry-excerpt">
+                                    <span>Author: {{post.author.get_fullname_or_username}}</span>
+                                    <div class="like" >
+                                        <span class="glyphicon glyphicon-heart active"></span>
+                                        <span class="liked_num">  {% get_like_count post %}</span>
+                                    </div>
+                                    <br>    
+                                    <span>Upated on: {{post.update_date}}</span>                                       				
+                                    <br>
+                                    <br>
+                                    {{post.intro |safe |truncatechars:140}}
+                                </div>
+                        </div>
+        
+                    </article> <!-- end article -->
+
+                {% endfor %}
+            </div> <!-- end brick-wrapper --> 
+
+        </div> <!-- end row -->
+ 
+        <div class="row" style="text-align: center;">
+            
+            <nav class="pagination" justify-content-center>
+                {% if posts.has_previous %}
+                    <a href="?page={{posts.previous_page_number}}" class="page-numbers prev">&laquo</a>
+                {% else %}
+                    <span class="page-numbers prev inactive">&laquo</span>
+                {% endif %}
+                {% for i in page_range %}                    
+                    {% if i == posts.number %}
+                        <span class="page-numbers current">{{i}}</span>
+                    {% else %}
+                        {% if i == '...' %}
+                            <span class="page-numbers inactive">{{i}}</span>
+                        {% else %}
+                            <a href="?page={{i}}" class="page-numbers">{{i}}</a>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                {% if posts.has_next %}
+                    <a href="?page={{posts.next_page_number}}" class="page-numbers next">&raquo;</a>
+                {% else %}
+                    <span class="page-numbers next inactive">&raquo;</span>
+                {% endif%}          
+               
+           </nav>
+ 
+        </div>
+    
+    </section> <!-- end bricks -->
+    
+{% endblock %}

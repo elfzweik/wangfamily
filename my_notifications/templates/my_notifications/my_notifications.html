@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    我的网站 | 我的消息
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'my_notifications/my_notifications.css' %}">
+{% endblock %}
+
+{% block nav_home_active %}active{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-10 col-xs-offset-1">
+                {% if user.profile.avatar %}
+                    <img src="{{ user.profile.avatar.url }}" alt="">
+                {% endif %} &nbsp;&nbsp;&nbsp;&nbsp;
+                <h3 class="user-name-avatar">{{ user.get_fullname_or_username }}</h3>
+                <br><br>
+                <div class="panel panel-default">
+                    <div class="panel-heading">您的消息</div>
+                    <div class="panel-body">
+                        <ul class="notifications">
+                            {% for notification in request.user.notifications.all %}
+                                <li class="{% if not notification.unread %}read{% endif %}">
+                                    <div class="avatar">
+                                        <img width="50" height="50" class="avatar" src="{{notification.actor.profile.avatar.url}}" alt="">
+                                    </div>
+                                    &nbsp;&nbsp;{{ notification.actor.get_fullname_or_username }}
+                                    [{{ notification.timesince }}之前] 
+                                    <a href="{% url 'my_notification' notification.pk %}">{{ notification.verb }}</a>
+                                </li>
+                                
+                            {% empty %}
+                                <li>暂无消息</li>
+                            {% endfor %}
+                            
+                        </ul>
+                    </div>
+                    <div class="panel-footer">
+                        <a class="button button-primary" href="{% url 'notifications:mark_all_as_read' %}?next={% url 'my_notifications' %}">全部标为已读</a>
+                        <a class="button button-primary" href="{% url 'delete_my_read_notifications' %}">删除已读消息</a>
+                    </div>
+                  </div>
+               
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
