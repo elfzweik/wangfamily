@@ -127,3 +127,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+.dockerignore
+.vscode
+media_collected/
+IP2LOCATION-LITE-DB11.IPV6.BIN
+IP2LOCATION-LITE-DB3.IPV6.BIN
+db.sqlite3
