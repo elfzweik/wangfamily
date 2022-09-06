@@ -105,7 +105,7 @@ WSGI_APPLICATION = 'blogsite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'blogsite_db',
+        'NAME': 'wangfamily_db',
         'USER': 'elf',
         'PASSWORD': 'Ig2rdf@oyx',
         'HOST': 'localhost',
