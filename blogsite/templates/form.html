@@ -1,0 +1,85 @@
+{% load static wagtailuserbar %}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+ 
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>登录</title>
+        <link rel="stylesheet" href="{% static 'css/userinfo.css' %}">
+        <link rel="stylesheet" href="{% static 'bootstrap-3.3.7/css/bootstrap.min.css' %}">
+    </head>
+    
+    <body>
+        <div class="navbar navbar-inverse" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header"> 
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a href="/"><img id="caption-id" src="{% static 'WechatIMG84.png'%}" alt=""/></a>
+                </div>
+                <div id="navbar-collapse" class="collapse navbar-collapse pull-right">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="/">博客</a>
+                        </li>
+                        <li>
+                            <a href="/about/">关于</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'register' %}?from={{ request.get_full_path }}">注册</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-10 col-sm-6">
+                    <div id="loginDiv">
+                        {% if user.is_authenticated %}
+                        <form action="" method="POST", enctype="multipart/form-data">
+                            <h1 style="text-align:center; color:#f0edf3">{{user.username}}</h1><br>
+                            <div style="text-align: center">
+                                {% if user.profile.avatar %}
+                                    <img src="{{user.profile.avatar.url}}" alt="" id="avatar"><br>
+                                {% endif %}   
+                                
+                            </div>
+                            <br>
+                            {% csrf_token %}
+                            {% for field in form %}
+                                <div class="panel-items">
+                                    {% if not field.is_hidden %}
+                                        <label class="items" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {% endif %}  
+                                    {{ field }}
+                                </div>  
+                                <p class="text-danger">{{ field.errors.as_text }}</p>
+                            {% endfor %}    
+                            <span id="tip" class="text-danger"></span>
+                            <p style="text-align: center;">
+                                <input type="submit" class="button" value="{{ submit_text }}">
+                                <button class="button" onclick="javascript:window.location.href='{{return_back_url}}'">返回</button>
+                            </p>
+                        {% else %}
+                            <span>未登录，跳转到首页...</span>
+                            <script type="text/javascript">
+                                window.location.href = '/';
+                            </script>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>    
+ 
+ </body>
+ 
+ </html>

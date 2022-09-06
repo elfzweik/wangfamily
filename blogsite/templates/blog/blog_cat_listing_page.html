@@ -1,0 +1,101 @@
+{% extends "base.html" %} {% load wagtailimages_tags wagtailcore_tags %} {% block title %} {{ category }} {% endblock %} {% block content %}
+
+
+<div class="list_title">
+    <p>
+        <font size="3" color="grey">
+            <br> {% if posts %} {{ caption }}, click <a href="/">here</a> to return {% else %} No page found, click <a href="/">here</a> to return {% endif %}
+        </font>
+    </p>
+</div>
+
+
+<!-- masonry
+    ================================================== -->
+<section id="bricks">
+
+    <div class="row masonry">
+
+        <!-- brick-wrapper -->
+        <div class="bricks-wrapper">
+
+            <div class="grid-sizer"></div>
+
+            {% for post in posts %}
+
+            <article class="brick entry format-standard animate-this">
+
+                <div class="entry-thumb">
+                    {% if post.main_image %} {% image post.main_image width-700 as blog_img %}
+                    <a href="{{post.url}}" class="thumb-link">
+                        <img src="{{blog_img.url}}" alt="{{post.custom_title}}">
+                    </a>
+                    {% endif %}
+                </div>
+
+                <div class="entry-text">
+                    <div class="entry-header">
+
+                        <div class="entry-meta">
+                            <span class="cat-links">
+                                    {% for tag in post.tags.all %}
+                                        <span class="glyphicon glyphicon-tag"></span>
+                            <a href="{%slugurl 'tags' %}?tag={{ tag }}">{{tag}}</a> {% endfor %}
+                            </span>
+                        </div>
+
+                        <h1 class="entry-title"><a href="{{post.url}}">{{post.custom_title|safe}}</a></h1>
+
+                    </div>
+                    <div class="entry-excerpt">
+                        <span>Author: {{post.author.get_fullname_or_username}}</span>
+                        <br>
+                        <span>Upated at: {{post.update_date}}</span>
+                        <br>
+                        <br> {{post.intro |safe |truncatechars:140}}
+                    </div>
+                </div>
+
+            </article>
+            <!-- end article -->
+
+            {% endfor %}
+        </div>
+        <!-- end brick-wrapper -->
+
+    </div>
+    <!-- end row -->
+
+    <div class="row" style="text-align: center;">
+
+        <nav class="pagination">
+            {% if posts.has_previous %}
+            <a href="{% url 'category_view' %}?category={{ category }}&amp;page={{posts.previous_page_number}}" class="page-numbers prev">&laquo</a> {% else %}
+            <span class="page-numbers prev inactive">&laquo</span> {% endif %} {% for i in page_range %} {% if i == posts.number %}
+            <span class="page-numbers current">{{i}}</span> {% else %} {% if i == '...' %}
+            <span class="page-numbers inactive">{{i}}</span> {% else %}
+            <a href="{% url 'category_view' %}?category={{ category }}&amp;page={{i}}" class="page-numbers">{{i}}</a> {% endif %} {% endif %} {% endfor %} {% if posts.has_next %}
+            <a href="{% url 'category_view' %}?category={{ category }}&amp;page={{posts.next_page_number}}" class="page-numbers next">&raquo;</a> {% else %}
+            <span class="page-numbers next inactive">&raquo;</span> {% endif%}
+
+        </nav>
+
+    </div>
+
+</section>
+<!-- end bricks -->
+
+
+
+
+<div class="container">
+
+
+    <a href="{{post.url}}"><img src="{{blog_img.url}}" alt=""></a>
+    <a href="{{post.url}}">{{post.custom_title}}</a>
+    <br>
+
+
+</div>
+
+{% endblock %}

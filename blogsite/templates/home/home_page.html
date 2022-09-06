@@ -1,0 +1,20 @@
+{% extends "base.html" %} {% load wagtailcore_tags wagtailimages_tags %} {% block content%} {% image self.banner_image fill-1600x240 as img %}
+<div class="jumbotron" style="background-image: url('{{img.url}}');
+    background-size: cover">
+    <h1 class="slide-title lishu" style="color: white;">{{ self.banner_title }}</h1>
+    <p>
+        <h2 class="sxt" style="color: white;" !important>{{ self.banner_subtitle | safe}}</h2>
+    </p>
+</div>
+
+<div class="container_fluid">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <p>
+                {{ self.content | safe}}
+            </p>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

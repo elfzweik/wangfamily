@@ -1,0 +1,4 @@
+  load database
+     from sqlite:///home/elf/www/blogsite/db.sqlite3 into postgres://elf:Ig2rdf@@oyx@localhost:5432/blogsite_db
+ with include no drop,truncate, create tables, create indexes, reset sequences, data only
+  set work_mem to '16MB', maintenance_work_mem to '512 MB';  

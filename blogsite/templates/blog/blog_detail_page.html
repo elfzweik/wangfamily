@@ -1,0 +1,436 @@
+{% extends "base.html" %} {% load static wagtailuserbar %} {% load wagtailmath %} {% load wagtailimages_tags wagtailcore_tags wagtailembeds_tags%} {% load comment_tags %} {% load like_tags %} {% load wagtailmarkdown %} {% block header %}
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+<script src="{% mathjax %}"></script>
+
+{% endblock %} {% block content %}
+
+<!-- content
+   ================================================== -->
+<section id="content-wrap" class="blog-single">
+    <div class="row">
+        <div class="col-twelve">
+
+            <article class="format-standard">
+                <div class="content-media">
+                    <div class="post-thumb">
+                        {% image self.main_image original as blog_img %}
+                        <img src="{{blog_img.url}}" alt="{{self.blog_title}}">
+                    </div>
+                </div>
+                <div class="primary-content">
+
+                    <h1 class="page-title">{{self.custom_title}}</h1>
+                    <ul class="entry-meta">
+                        <li class="date">Created: {{self.create_date}}</li>
+                        <li class="date">Updated: {{self.update_date}}</li>
+                        <li class="author">Author: {{self.author.get_fullname_or_username}}</li>
+                        <br> {% for tag in self.tags.all %}
+                        <span class="glyphicon glyphicon-tag"></span>
+                        <li class="tags"><a href="{%slugurl 'tags' %}?tag={{ tag }}">{{tag}}</a></li>
+                        {% endfor %}
+                        <br> {% with categories=page.categories.all %} {% if categories %}
+                        <h3 style="display: inline; margin-right: rem">专题： </h3>
+
+                        {% for category in categories %}
+                        <li class="cat">
+                            {% image category.icon max-32x32 %} {{ category.name }}
+                        </li>
+                        {% endfor %} {% endif %} {% endwith %}
+                    </ul>
+                    <p class="lead">
+                        {{self.intro|richtext}}
+                    </p>
+                    <div class="blog-content">
+                        <p>
+                            {% for block in self.content %} {% if block.block_type == 'heading' %}
+                            <h1>{{ block.value }}</h1>
+                            {% elif block.block_type == 'embeded' %}
+                            <section style="width:800px;">{% embed value.embeded max_width="640" %}</section>
+                            {% elif block.block_type == 'wagtailmarkdown' %}
+                            <section> {{ self.body|markdown }} </section>
+                            {% else %}
+                            <section class="block-{{ block.block_type }}">
+                                {% include_block block %}
+                            </section>
+                            {% endif %} {% endfor %}
+                        </p>
+                    </div>
+                </div>
+                <div class="pagenav group">
+                    <div class="prev-nav">
+                        {% if self.prev %}
+                        <a href="{{ self.prev.url}}" rel="prev">
+                            <span>Previous</span> {{self.prev.specific.custom_title}}
+                        </a>
+                        {% else %}
+                        <a href=""><span>Previous</span>
+                                    已是第一篇</a> {% endif %}
+                    </div>
+                    <div class="next-nav">
+                        {% if self.next%}
+                        <a href="{{ self.next.url }}" rel="next">
+                            <span>Next</span> {{self.next.specific.custom_title}}
+                        </a>
+                        {% else %}
+                        <a href=""><span>Next</span>
+                                已是最后一篇</a> {% endif %}
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
+        <!-- end col-twelve -->
+    </div>
+    <!-- end row -->
+
+    <div class="comments-wrap">
+        <div id="comments" class="row">
+            <div class="col-full">
+                <h3><a href="#id_text"> Leave a Comment</a></h3>
+                <div class="like" onclick="likeChange(this, '{% get_content_type self %}', {{ self.pk }})">
+                    <span class="glyphicon glyphicon-heart {% get_like_status self %}"></span>
+                    <span class="liked_num">  {% get_like_count self %}</span> {% get_like_users self as like_users %} {% for like_user in like_users %}
+                    <span class="like_users">{{ like_user.user.get_fullname_or_username}}、</span> {% endfor %}
+                </div>
+                <hr>
+                <h3>{% get_comment_count self %} Comments</h3>
+
+                <!-- commentlist -->
+
+                <ol class="commentlist" id="commentlist-id">
+                    {% get_comment_list self as comments %} {% for comment in comments %}
+                    <li class="thread-alt depth-1" id="root_{{ comment.pk }}">
+
+                        <div class="avatar">
+                            <img width="50" height="50" class="avatar" src="{{comment.user.profile.avatar.url}}" alt="">
+                        </div>
+
+                        <div class="comment-content">
+
+                            <div class="comment-info">
+                                <cite id="commentor-{{comment.pk}}">{{comment.user.get_fullname_or_username}}</cite>
+                                <div class="like" onclick="likeChange(this, '{% get_content_type comment %}', {{ comment.pk }})">
+                                    <span class="glyphicon glyphicon-heart {% get_like_status comment %}"></span>
+                                    <span class="liked_num">  {% get_like_count comment %}</span>
+                                </div>
+
+                                <div class="comment-meta">
+                                    <time class="comment-time" id="commnet-time-id" datetime="2014-07-12T23:05">{{ comment.comment_time|date:"Y-m-d H:i:s" }}</time>
+                                    <span class="sep">/</span><a class="reply" href="javascript:reply({{ comment.pk }});">Reply</a>
+                                </div>
+                            </div>
+
+                            <div class="comment-text">
+                                <p id="comment_{{ comment.pk }}">{{ comment.text }}</p>
+                            </div>
+
+                        </div>
+                        {% for reply in comment.root_comment.all %}
+                        <ul class="children">
+
+                            <li class="depth-2">
+
+                                <div class="avatar-depth-2">
+                                    <img width="50" height="50" class="avatar-depth-2" src="{{reply.user.profile.avatar.url}}" alt="">
+                                </div>
+
+                                <div class="comment-content">
+
+                                    <div class="comment-info">
+                                        <cite id="commentor-{{reply.pk}}">{{reply.user.get_fullname_or_username}} 
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right" viewBox="0 0 16 16">
+                                                                <path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
+                                                            </svg>
+                                                         {{ reply.reply_to.get_fullname_or_username}}</cite>
+                                        <div class="like" onclick="likeChange(this, '{% get_content_type reply %}', {{ reply.pk }})">
+                                            <span class="glyphicon glyphicon-heart {% get_like_status reply %}"></span>
+                                            <span class="liked_num">  {% get_like_count reply %}</span>
+                                        </div>
+
+                                        <div class="comment-meta" id="comment-time-id">
+                                            <time class="comment-time" datetime="2014-07-12T25:05">{{ reply.comment_time|date:"Y-m-d H:i:s" }}</time>
+                                            <span class="sep">/</span><a class="reply" href="javascript:reply({{ reply.pk }});">Reply</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="comment-text" id="comment-text-id">
+                                        <p id="comment_{{reply.pk}}">{{ reply.text }}</p>
+                                    </div>
+
+                                </div>
+                            </li>
+                        </ul>
+                        {% endfor %}
+                    </li>
+
+                    {% endfor %}
+                </ol>
+                <!-- Commentlist End -->
+                <!-- respond -->
+                <div class="respond" id="id-respond">
+                    {% if user.is_authenticated %}
+                    <form id="comment_form-id" action="{% url 'update_comment' %}" method="POST">
+                        <fieldset>
+                            <label>{{ user.get_fullname_or_username }}，尽情吐槽吧~</label>
+                            <div id="reply-content-container-id" style="display:none;">
+                                <p id="reply-title-id">回复：</p>
+                                <div id="reply-content-id"></div>
+                            </div>
+                            <span id="comment_error" class="text-danger pull-left"></span> {% csrf_token %}
+                            <input type="hidden" name="content_type" value="blogdetailpage" id="id_content_type">
+
+                            <input type="hidden" name="object_id" value="{{self.pk}}" id="id_object_id">
+
+                            <input type="hidden" name="reply_comment_id" value="0" id="reply_comment_id">
+
+                            <div class="message form-field">
+                                <textarea style="margin-bottom : 0px" name="text" id="id_text" class="full-width" required onfocus="javascript: $('#comment_error').text('');"></textarea>
+                            </div>
+
+                            <input type="submit" value="Submit" class="submit button-primary">
+                        </fieldset>
+                    </form>
+                    <!--<form name="contactForm" id="contactForm-id" method="post" action="{% url 'update_comment' %}" onsubmit="javascript:submitComment()" >
+                                <fieldset>
+                                    <div class="form-field">
+                                            <label id="cName" class="full-width">{{ user.get_fullname_or_username }}，尽情吐槽吧~</label>
+                                    </div>
+                                    <div id="reply-content-container-id" style="display:none;">
+                                        <p id="reply-title-id">回复：</p>
+                                        <div id="reply-content-id"></div>
+                                    </div>
+                                    {% csrf_token %}
+                                    
+                                    <input type="hidden" name="content_type" value="blogdetailpage" id="id_content_type">
+                                    
+                                    <input type="hidden" name="object_id" value="{{self.pk}}" id="id_object_id">
+                                    
+                                    <input type="hidden" name="reply_comment_id" value="0" id="reply_comment_id">
+                                
+                                    <div class="message form-field"></div>
+                                        <textarea style= "margin-bottom : 0px" name="text" class="full-width" required id="id_text" οnfοcus="$("#comment_error").text('');“></textarea>
+                                    </div>
+ 
+                                    <span id="comment_error" class="text-danger pull-left"></span>
+                                    <button type="submit" class="submit button-primary" >Submit</button>
+                                </fieldset>
+                            </form> <!-- Form End -->
+                    {% else %}
+                    <p>来签个到再发言吧~</p>
+                    <br>
+                    <a class="button button-primary small-width" href="{% url 'login' %}?from={{ request.get_full_path }}">登录</a>
+
+                    <a class="button button-primary small-width" href="{% url 'register' %}?from={{ request.get_full_path }}">注册</a> {% endif %}
+                </div>
+                <!-- Respond End -->
+            </div>
+            <!-- end col-full -->
+        </div>
+        <!-- end row comments -->
+    </div>
+    <!-- end comments-wrap -->
+</section>
+<!-- end content -->
+
+
+{% endblock %} {% block script_extends %}
+<script type="text/javascript">
+    String.prototype.format = function() {
+        var str = this;
+        for (var i = 0; i < arguments.length; i++) {
+            var str = str.replace(new RegExp('\\{' + i + '\\}', 'g'), arguments[i])
+        };
+        return str;
+    }
+
+    function reply(reply_comment_id) {
+        // 设置值
+        $('#reply_comment_id').val(reply_comment_id);
+        var html = $("#comment_" + reply_comment_id).html();
+        console.log($("#commentor-" + reply_comment_id).html().split('<svg'));
+        var userhtml = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right" viewBox="0 0 16 16"><path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/></svg>' +
+            $("#commentor-" + reply_comment_id).html().split('<svg')[0];
+        console.log(userhtml);
+        $('#reply-title-id').html(userhtml);
+        $('#reply-content-id').html(html);
+        $('#reply-content-container-id').show();
+
+        $('html').animate({
+            scrollTop: $('#comment_form-id').offset().top - 60
+        }, 300, function() {
+            $('#id_text').focus();
+            $("#comment_error").text('');
+        });
+    }
+
+    function numFormat(num) {
+        return ('00' + num).substr(-2);
+    }
+
+    function timeFormat(timestamp) {
+        var datetime = new Date(timestamp * 1000);
+        var year = datetime.getFullYear();
+        var month = numFormat(datetime.getMonth() + 1);
+        var day = numFormat(datetime.getDate());
+        var hour = numFormat(datetime.getHours());
+        var minute = numFormat(datetime.getMinutes());
+        var second = numFormat(datetime.getSeconds());
+        return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
+    }
+
+    $("#comment_form-id").submit(function() {
+        // 判断是否为空
+        //debugger;
+        console.log("js捕获成功");
+        $("#comment_error").text('');
+        console.log($("#id_text").val());
+        if ($("#id_text").val().trim() == '') {
+            $("#comment_error").text('不说话您发的哪门子评论啊？');
+            return false;
+        }
+
+        // 更新数据到textarea
+        //$("#id_text").updateElement();
+        //$('id_text').updateElement();
+        console.log("to go into ajax");
+
+        // 异步提交
+        $.ajax({
+            url: "{% url 'update_comment' %}",
+            type: 'POST',
+            data: $('#comment_form-id').serialize(),
+            cache: false,
+            success: function(data) {
+                console.log(data);
+                if (data['status'] == "SUCCESS") {
+                    if ($('#reply_comment_id').val() == '0') {
+                        // 插入评论
+                        var comment_html = '<li class="thread-alt depth-1" id="root_{2}">' +
+                            '<div class="avatar"> <img width="50" height="50" class="avatar" src="{1}" alt="">' +
+                            '</div>' +
+                            '<div class="comment-content">' +
+                            '<div class="comment-info">' +
+                            '<cite id="commentor-{2}">{3}</cite>' +
+                            '<div class="like" onclick="likeChange(this, \'{5}\', {2})">' +
+                            '<span class="glyphicon glyphicon-heart "></span>' +
+                            '<span class="liked_num">  0</span>' +
+                            '</div>' +
+                            '<div class="comment-meta">' +
+                            '<time class="comment-time">{4}</time>' +
+                            '<span class="sep">/</span>' +
+                            '<a class="reply" href="javascript:reply({2});">Reply</a>' +
+                            '</div>' +
+                            '</div>' +
+                            '<div class="comment-text">' +
+                            '<p id="comment_{2}"> {0}</p>' +
+                            '</div>' +
+                            '</div>' +
+                            '</li>';
+                        comment_html = comment_html.format(data['text'], data["avatar"], data["pk"], data["username"], timeFormat(data['comment_time']), data["content_type"]);
+                        console.log(comment_html);
+                        $("#commentlist-id").prepend(comment_html);
+                    } else {
+                        // 插入回复
+                        var reply_html = '<ul class="children">' +
+                            '<li class="depth-2">' +
+                            '<div class="avatar-depth-2">' +
+                            '<img width="50" height="50" class="avatar-depth-2" src="{1}" alt="">' +
+                            '</div>' +
+                            '<div class="comment-content">' +
+                            '<div class="comment-info">' +
+                            '<cite id="commentor-{2}"> {3}' +
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right" viewBox="0 0 16 16">' +
+                            '<path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>' +
+                            '</svg>' +
+                            ' {4}</cite>' +
+                            '<div class="like" onclick="likeChange(this, \'{7}\', {{ reply.pk }})">' +
+                            '<span class="glyphicon glyphicon-heart "></span>' +
+                            '<span class="liked_num">  0</span>' +
+                            '</div>' +
+                            '<div class="comment-meta" >' +
+                            '<time class="comment-time">{5} </time>' +
+                            '<span class="sep">/</span>' +
+                            '<a class="reply" href="javascript:reply({6});">Reply</a>' +
+                            '</div>' +
+                            '</div>' +
+                            '<div class="comment-text" id="comment-text-id">' +
+                            '<p id="comment_{6}">{0}</p>' +
+                            '</div>' +
+                            '</div>' +
+                            '</li>' +
+                            '</ul>';
+                        reply_html = reply_html.format(data['text'], data['avatar'], data['pk'], data['username'], data['reply_to'], timeFormat(data['comment_time']), data['root_pk'], data['content_type']);
+                        console.log(reply_html);
+                        $("#root_" + data['root_pk']).append(reply_html);
+                    }
+
+                    // 清空编辑框的内容
+                    //$('#id_text').setData('');
+                    $('#id_text').val('');
+                    $('#reply-content-container-id').hide();
+                    $('#reply_comment_id').val('0');
+
+                    $("#comment_error").text('吐槽已发送');
+                } else {
+                    // 显示错误信息
+                    $("#comment_error").text(data['message']);
+                }
+            },
+            error: function(xhr) {
+                console.log(xhr);
+            }
+
+        });
+        console.log("ajax finished.");
+        return false;
+    });
+
+    function likeChange(obj, content_type, object_id) {
+        var is_like = obj.getElementsByClassName('active').length == 0;
+        console.log(is_like, content_type, object_id);
+        $.ajax({
+            url: "{% url 'like_change' %}",
+            type: 'GET',
+            data: {
+                content_type: content_type,
+                object_id: object_id,
+                is_like: is_like
+            },
+            cache: false,
+            success: function(data) {
+                console.log(data)
+                if (data['status'] == 'SUCCESS') {
+                    // 更新点赞状态
+                    var element = $(obj.getElementsByClassName('glyphicon-heart'));
+                    if (is_like) {
+                        element.addClass('active');
+                    } else {
+                        element.removeClass('active');
+                    }
+                    // 更新点赞数量
+                    var liked_num = $(obj.getElementsByClassName('liked_num'));
+                    liked_num.text(data['liked_num']);
+                } //else{
+                //if(data['code']==400){
+                //$('#login_modal').modal('show');
+                //}else{
+                //alert(data['message']);    
+                //}                        
+                //}
+            },
+            error: function(xhr) {
+                console.log(xhr)
+            }
+        });
+    }
+    if (window.location.hash) {
+        $('html').animate({
+            scrollTop: $(window.location.hash).offset().top - 60
+        }, 500);
+    }
+</script>
+
+{% endblock %}

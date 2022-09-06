@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+    <head>
+        <script src="../static/js/jquery-2.1.3.min.js"></script>
+    </head>
+    <body>
+        <form id="target" action="">
+            <input type="text" value="Hello there">
+            <input type="submit" value="Go">
+          </form>
+          <div id="other">
+            Trigger the handler
+          </div>
+
+          <script type="text/javascript">
+            $( "#target" ).submit(function(){
+                alert("js在工作");
+                //CKEDITOR.instances['id_text'].updateElement()
+                alert("ckeditor在工作");
+                //异步提交
+                $.ajax({
+                    url: "{{ self.url }}",
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    cache: false,
+                    success: function(data){
+                        console.log(data);
+                    },
+                    error: function(xhr){
+                        console.log(xhr);
+                    }
+                });
+                alert("ajax在工作");
+                return false;
+            });
+            
+        </script>
+        
+    </body>
+
+</html>
