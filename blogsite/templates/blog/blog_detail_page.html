@@ -25,6 +25,11 @@
                         <li class="date">Created: {{self.create_date}}</li>
                         <li class="date">Updated: {{self.update_date}}</li>
                         <li class="author">Author: {{self.author.get_fullname_or_username}}</li>
+                        <li>
+                            <div class="avatar">
+                                <img width="50" height="50" class="avatar" src="{{self.author.profile.avatar.url}}" alt="">
+                            </div>
+                        </li>
                         <br> {% for tag in self.tags.all %}
                         <span class="glyphicon glyphicon-tag"></span>
                         <li class="tags"><a href="{%slugurl 'tags' %}?tag={{ tag }}">{{tag}}</a></li>
