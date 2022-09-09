@@ -130,8 +130,8 @@ CACHES = {
         }
     },
     'renditions': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/2',
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
         'TIMEOUT': 600,
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
