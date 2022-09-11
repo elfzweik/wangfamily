@@ -69,7 +69,8 @@
                             <span>Previous</span> {{self.prev.specific.custom_title}}
                         </a>
                         {% else %}
-                        <span>Previous</span> 已是第一篇 {% endif %}
+                        <a href=""><span>Previous</span>
+                                    已是第一篇</a> {% endif %}
                     </div>
                     <div class="next-nav">
                         {% if self.next %} {% if self.next.specific.custom_title %}
@@ -77,8 +78,10 @@
                             <span>Next</span> {{self.next.specific.custom_title}}
                         </a>
                         {% else %}
-                        <span>Next</span> 已是最后一篇 {% endif %} {% else%}
-                        <span>Next</span> 已是最后一篇{% endif %}
+                        <a href=""><span>Next</span>
+                                已是最后一篇</a> {% endif %} {% else%}
+                        <a href=""><span>Next</span>
+                                已是最后一篇</a> {% endif %}
                     </div>
 
                 </div>
