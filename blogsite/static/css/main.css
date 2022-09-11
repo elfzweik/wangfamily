@@ -3119,7 +3119,8 @@ img.menu-avatar {
 }
 
 img.avatar {
-    margin-top: 0.6rem;
+    margin-left: 0.2rem;
+    margin-top: 0rem;
     height: 6rem;
     width: 6rem;
     border-radius: 100%;
