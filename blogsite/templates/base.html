@@ -137,8 +137,6 @@
                 <a class="menu-toggle" href="#"><span>Menu</span></a>
             </div>
             <!-- end triggers -->
-
-
         </div>
 
     </header>
@@ -165,6 +163,7 @@
                     <p>共有 <span id='hits'>{{ total_visitors }}</span> 人访问</p>
                     <p>共有 <span id='visitor'>{{ total_hits }}</span> 次访问</p>
                     <p>您的ip地址是； {{ client_ip }} 来自 {{location}}</p>
+                    <p id="deviceresolution">#</p>
                 </div>
                 <!-- end footer-info -->
 
@@ -292,10 +291,13 @@
                 html1 = html1 + '<img class="visits" src="' + hitsImgName + '" alt="" />';
                 html2 = html2 + '<img class="visits" src="' + visImgName + '" alt=""/>';
             }
+            var resolution;
+            resolution = document.documentElement.clientHeight + 'x' + document.documentElement.clientWidth;
             $('#hits').html('');
             $('#visitor').html('');
             $('#hits').append(html1);
             $('#visitor').append(html2);
+            $('#deviceresolution').html(resolution);
         });
     </script>
     {% register_notify_callbacks callbacks='my_special_notification_callback' %} {% block script_extends %}{% endblock %} {# Global javascript #} {% block extra_js %} {# Override this in templates to add extra javascript #} {% endblock %}
