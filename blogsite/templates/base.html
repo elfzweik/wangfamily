@@ -292,7 +292,7 @@
                 html2 = html2 + '<img class="visits" src="' + visImgName + '" alt=""/>';
             }
             var resolution;
-            resolution = document.documentElement.clientHeight + 'x' + document.documentElement.clientWidth;
+            resolution = document.documentElement.clientHeight + 'x' + document.documentElement.clientWidth + '|' + window.innerHeight + 'x' + window.innerWidth;
             $('#hits').html('');
             $('#visitor').html('');
             $('#hits').append(html1);
