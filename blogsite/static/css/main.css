@@ -106,6 +106,13 @@ a:focus {
     border-color: rgba(21, 21, 21, 0.2);
 }
 
+a.disabled {
+    pointer-events: none;
+    filter: alpha(opacity=50);
+    -moz-opacity: 0.5;
+    opacity: 0.5;
+}
+
 
 /* ===================================================================
  *  03. typography & general theme styles - (_document-setup.scss) 
