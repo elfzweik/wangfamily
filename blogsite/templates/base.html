@@ -261,7 +261,13 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     <script type="text/javascript">
         mermaid.initialize({
-            startOnLoad: true
+            startOnLoad: true,
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'cardinal'
+            },
+            securityLevel: 'loose'
         });
         //自定义实时获取未读消息
         function my_special_notification_callback(data) {
