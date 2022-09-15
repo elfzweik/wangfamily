@@ -1,10 +1,29 @@
 {% extends "base.html" %} {% load wagtailcore_tags wagtailimages_tags %} {% block content%} {% image self.banner_image fill-1600x240 as img %}
-<div class="jumbotron" style="background-image: url('{{img.url}}');
+<!--<div class="jumbotron" style="background-image: url('{{img.url}}');
     background-size: cover">
     <h1 class="slide-title lishu" style="color: white;">{{ self.banner_title }}</h1>
     <p>
         <h2 class="sxt" style="color: white;" !important>{{ self.banner_subtitle | safe}}</h2>
     </p>
+</div>-->
+
+<div class="box" id="swiper-roll">
+    <div id="roll-wrap">
+        <ul id="ul_img">
+            {% for item in self.gallery_images.all %}
+            <li>
+                {% image item.image original as banner_img %}
+                <img class="tt" src="{{ banner_img.url }}" />
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div id="banner_title">
+        <h1 class="slide-title lishu" style="color: white;">{{ self.banner_title }}</h1>
+        <p>
+            <h2 class="sxt" style="color: white;" !important>{{ self.banner_subtitle | safe}}</h2>
+        </p>
+    </div>
 </div>
 
 <div class="container_fluid">
@@ -17,4 +36,87 @@
     </div>
 
 </div>
+{% endblock %} {% block script_extends %}
+<script type="text/javascript">
+    var millisec = 10; //滚动间隔时间（毫秒）
+
+    var intervalId;
+
+    var left = 0;
+
+    var ul;
+    var lis;
+    var div1;
+
+    window.onload = function() {
+
+        ul = document.getElementById("ul_img");
+
+        ul.innerHTML += ul.innerHTML; //复制一份相同的li
+        ul.innerHTML += ul.innerHTML; //总长度变为4倍长度
+        lis = ul.getElementsByTagName("li");
+
+        ul.style.width = (lis[0].offsetWidth * lis.length) + "px"; //重新设置宽度
+
+        intervalId = setInterval("scroll()", millisec);
+
+
+
+        div1 = document.getElementById("swiper-roll");
+
+        div1.onmouseover = function() {
+
+            clearInterval(intervalId);
+
+        }
+
+        div1.onmouseout = function() {
+
+            intervalId = setInterval("scroll()", millisec);
+
+        }
+
+    }
+
+    function scroll() {
+        left -= 1;
+        //定位小于等于总宽度的二分之一时，则left设置为0
+        if (left <= -ul.offsetWidth / 2)
+            left = 0;
+        ul.style.left = left + "px";
+    }
+
+
+
+
+    /*$(document).ready(function() {
+        new ZouMa().Start();
+    });
+
+    function ZouMa() {
+        this.maxLength = 3; //最低显示数   
+        this.Timer = 1000; //计时器间隔时间
+        this.Ul = $(".box ul");
+        var handId; //计时器id
+        var self = this;
+        this.Start = function() {
+            console.log(this.maxLength)
+            if (self.Ul.children().length < this.maxLength) {
+                self.Ul.append(self.Ul.children().clone());
+            }
+            handId = setInterval(self.Play, self.Timer);
+        }
+        this.Play = function() {
+            var img = self.Ul.children().eq(0);
+            var left = img.children().eq(0).width();
+            img.animate({
+                "marginLeft": (-1 * left) + "px"
+            }, 600, function() {
+                //appendTo函数是实现走马灯一直不间断播放的秘诀。
+                //目前网上看到的很多走马灯，走到最后一张的时候，会立马闪回第一张，而不是继续从后往前推进，即是没有明白该函数的作用的原因
+                $(this).css("margin-left", "auto").appendTo(self.Ul);
+            });
+        }
+    }*/
+</script>
 {% endblock %}
