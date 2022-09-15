@@ -3506,3 +3506,49 @@ img.avatar {
 ul.main-navigation li.menu-li {
     padding-top: 20px;
 }
+
+
+/* carrousel about page
+*--------------------------------*/
+
+#swiper-roll {
+    width: 100%;
+    overflow: hidden;
+    height: 300px;
+    margin: 0 0;
+    position: relative;
+}
+
+#roll-wrap {
+    width: 500%;
+    height: 100%;
+}
+
+#ul_img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0 0;
+    padding: 0 0;
+}
+
+#ul_img li {
+    float: left;
+    height: 300px;
+    list-style: none;
+}
+
+#ul_img li img {
+    width: 100%;
+    height: 100%;
+}
+
+#banner_title {
+    position: absolute;
+    top: 6rem;
+    left: 0;
+}
+
+#banner_title h1 {
+    font-size: 6rem;
+}
