@@ -9,5 +9,5 @@ IP2Location==8.7.4
 notifications==0.3.2
 django-redis==5.2.0
 wagtailmath==1.2.0
-markdown == 3.2.6
+markdown == 3.3.6
 pygments
