@@ -12,7 +12,7 @@
         <ul id="ul_img">
             {% for item in self.gallery_images.all %}
             <li>
-                {% image item.image original as banner_img %}
+                {% image item.image height-300 as banner_img %}
                 <img class="tt" src="{{ banner_img.url }}" />
             </li>
             {% endfor %}
