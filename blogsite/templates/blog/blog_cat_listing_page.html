@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% load wagtailimages_tags wagtailcore_tags %} {% block title %} {{ category }} {% endblock %} {% block content %}
+{% extends "base.html" %} {% load wagtailimages_tags wagtailcore_tags %} {% load like_tags %} {% block title %} {{ category }} {% endblock %} {% block content %}
 
 
 <div class="list_title">
@@ -48,7 +48,12 @@
 
                     </div>
                     <div class="entry-excerpt">
-                        <span>Author: {{post.author.get_fullname_or_username}}</span>
+                        <span>Author: {{post.author.get_fullname_or_username}}</span>&nbsp &nbsp
+                        <span>{{ post.get_blog_visit_num}} reads</span>
+                        <div class="like">
+                            <span class="glyphicon glyphicon-heart active"></span>
+                            <span class="liked_num">  {% get_like_count post %}</span>
+                        </div>
                         <br>
                         <span>Upated at: {{post.update_date}}</span>
                         <br>

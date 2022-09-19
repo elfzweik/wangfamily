@@ -31,7 +31,7 @@ from wagtailmath.blocks import MathBlock
 
 from streams.blocks import CardBlock
 from visitor_record.utils import count_visits
-
+from visitor_record.models import ReadNumExpandMethod
 # Create your models here.
 class BlogListingPage(Page):
     template = "blog/blog_listing_page.html"
@@ -194,7 +194,7 @@ class BlogCategory(models.Model):
     class Meta:
         verbose_name_plural = 'blog categories'
 
-class BlogDetailPage(Page):
+class BlogDetailPage(Page, ReadNumExpandMethod):
     template = "blog/blog_detail_page.html"
     
     def get_context(self, request):

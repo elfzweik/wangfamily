@@ -13,9 +13,13 @@ def count_visits(request, obj):       #修改网站访问量和访问ip等信息
     ct = ContentType.objects.get_for_model(obj)
     key = "%s_%s_read" % (ct.model, obj.pk)
     count_nums, created = VisitNumber.objects.get_or_create(id=1)
+    blog_visit_count, created = BlogVisitNumber.objects.get_or_create(content_type=ct, object_id=obj.pk)
     if not request.COOKIES.get(key):      
         count_nums.count += 1
         count_nums.save()
+        blog_visit_count.count += 1
+        blog_visit_count.save()
+    
     
     # 记录访问ip和每个ip的次数
     if 'X-Real-IP' in request.META:
