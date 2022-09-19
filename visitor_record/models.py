@@ -1,5 +1,8 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from django.db.models.fields import exceptions
  
 #访问网站的ip地址和次数
 class Userip(models.Model):
@@ -31,3 +34,18 @@ class DayNumber(models.Model):
     def __str__(self):
         return str(self.day)
 
+class BlogVisitNumber(models.Model):
+    count=models.IntegerField(verbose_name='本篇博客阅读次数',default=0) #网站访问总次数
+    content_type = models.ForeignKey(ContentType, on_delete=models.DO_NOTHING)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+class ReadNumExpandMethod():
+    def get_blog_visit_num(self):
+        try:
+            print(self.pk)
+            ct = ContentType.objects.get_for_model(self)
+            blog_visit_num = BlogVisitNumber.objects.get(content_type=ct, object_id=self.pk)
+            return blog_visit_num.count
+        except exceptions.ObjectDoesNotExist:
+            return 0
