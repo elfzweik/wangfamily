@@ -43,7 +43,6 @@ class BlogVisitNumber(models.Model):
 class ReadNumExpandMethod():
     def get_blog_visit_num(self):
         try:
-            print(self.pk)
             ct = ContentType.objects.get_for_model(self)
             blog_visit_num = BlogVisitNumber.objects.get(content_type=ct, object_id=self.pk)
             return blog_visit_num.count
