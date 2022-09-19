@@ -93,7 +93,7 @@ class BlogListingPage(Page):
         template = self.get_template(request)
         
         response = render(request, template, context)
-        response.set_cookie(context['cookie'], 'true', max_age=300)
+        response.set_cookie(context['cookie'], 'true', max_age=3000)
         return response
 
     class Meta:
@@ -161,7 +161,7 @@ class BlogTagIndexPage(Page):
         template = self.get_template(request)
         
         response = render(request, template, context)
-        response.set_cookie(context['cookie'], 'true', max_age=300)
+        response.set_cookie(context['cookie'], 'true')
         return response
 
 class CustomStreamField(StreamField):
@@ -214,10 +214,11 @@ class BlogDetailPage(Page, ReadNumExpandMethod):
     
     def serve(self, request):
         context = self.get_context(request)
+        print(request.COOKIES)
         template = self.get_template(request)
         
         response = render(request, template, context)
-        response.set_cookie(context['cookie'], 'true', max_age=300)
+        response.set_cookie(context['cookie'], 'true', max_age=3000)
         return response
         
 

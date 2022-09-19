@@ -40,7 +40,7 @@ class HomePage(Page):
         template = self.get_template(request)
         
         response = render(request, template, context)
-        response.set_cookie(context['cookie'], 'true', max_age=300)
+        response.set_cookie(context['cookie'], 'true', max_age=3000)
         return response
 
     class Meta:
