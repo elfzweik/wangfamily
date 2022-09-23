@@ -18,7 +18,8 @@ class MyComment(models.Model):
     root = models.ForeignKey('self', related_name='root_comment', null=True, on_delete=models.CASCADE)
     parent = models.ForeignKey('self', related_name='parent_comment', null=True, on_delete=models.CASCADE)
     reply_to = models.ForeignKey(User, related_name="replies", null=True, on_delete=models.CASCADE)
-    
+    save_caused_by_comment = models.BooleanField(default=False)
+
     def __str__(self):
         return self.text
 

@@ -25,8 +25,11 @@ def update_comment(request):
             comment.reply_to = parent.user
             comment.root.update_time = datetime.now()
             parent.update_time = datetime.now()
+            comment.root.save_caused_by_comment = True
             comment.root.save()
+            parent.save_caused_by_comment = True
             parent.save()
+        comment.save_caused_by_comment = False
         comment.save()
         
 
