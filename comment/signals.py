@@ -12,24 +12,27 @@ from .models import MyComment
 @receiver(post_save, sender=MyComment)
 def send_notification(sender, instance, **kwargs):
     # 发送站内消息
-    if instance.reply_to is None:
-        # 评论
-        recipient = instance.content_object.get_user()
-        if instance.content_type.model == 'blogdetailpage':
-            blog = instance.content_object
-            verb = '评论了你的《{0}》'.format( 
-                blog.title
-            )
-        else:
-            raise Exception('unknown comment object type')
+    if instance.save_caused_by_comment:
+        pass
     else:
-        # 回复
-        recipient = instance.reply_to
-        verb = '回复了你的评论“{0}”'.format(
-                strip_tags(instance.parent.text)
-            )
-    url = instance.content_object.get_url() + "#comment_" + str(instance.pk)
-    notify.send(instance.user, recipient=recipient, verb=verb, action_object=instance, url=url)
+        if instance.reply_to is None:
+            # 评论
+            recipient = instance.content_object.get_user()
+            if instance.content_type.model == 'blogdetailpage':
+                blog = instance.content_object
+                verb = '评论了你的《{0}》'.format( 
+                    blog.title
+                )
+            else:
+                raise Exception('unknown comment object type')
+        else:
+            # 回复
+            recipient = instance.reply_to
+            verb = '回复了你的评论“{0}”'.format(
+                    strip_tags(instance.parent.text)
+                )
+        url = instance.content_object.get_url() + "#comment_" + str(instance.pk)
+        notify.send(instance.user, recipient=recipient, verb=verb, action_object=instance, url=url)
 '''
 class SendMail(threading.Thread):
     def __init__(self, subject, text, email, fail_silently=False):
