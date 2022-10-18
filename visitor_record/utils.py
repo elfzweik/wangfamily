@@ -25,7 +25,7 @@ def count_visits(request, obj):       #修改网站访问量和访问ip等信息
         client_ip = request.META['HTTP_CLIENT_IP']
 
     count_nums, created = VisitNumber.objects.get_or_create(id=1)
-    ip_exist, created= Userip.objects.get_or_create(ip=str(client_ip))
+    ip_exist, ip_created= Userip.objects.get_or_create(ip=str(client_ip))
     if request.COOKIES != {}:
         if not request.COOKIES.get(key):      
             blog_visit_count, created = BlogVisitNumber.objects.get_or_create(content_type=ct, object_id=obj.pk)
@@ -34,7 +34,7 @@ def count_visits(request, obj):       #修改网站访问量和访问ip等信息
             blog_visit_count.count += 1
             blog_visit_count.save()
 
-            if created:    
+            if ip_created:    
                 database = IP2Location.IP2Location(BASE_DIR + "/visitor_record/data/IP2LOCATION-LITE-DB3.IPV6.BIN")
                 
                 rec = database.get_all(client_ip)
