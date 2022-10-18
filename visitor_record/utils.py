@@ -26,7 +26,7 @@ def count_visits(request, obj):       #修改网站访问量和访问ip等信息
 
     count_nums, created = VisitNumber.objects.get_or_create(id=1)
     ip_exist, ip_created= Userip.objects.get_or_create(ip=str(client_ip))
-    if request.COOKIES != {}:
+    if request.COOKIES != {} or ip_created:
         if not request.COOKIES.get(key):      
             blog_visit_count, created = BlogVisitNumber.objects.get_or_create(content_type=ct, object_id=obj.pk)
             count_nums.count += 1
