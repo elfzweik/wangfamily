@@ -14,11 +14,11 @@ def count_visits(request, obj):       #修改网站访问量和访问ip等信息
     key = "%s_%s_read" % (ct.model, obj.pk)
     
     # 记录访问ip和每个ip的次数
-    if 'X-Real-IP' in request.META:
-        client_ip = request.META['X-Real-IP']
-    elif 'HTTP_X_FORWARDED_FOR' in request.META:  # 获取ip
+    if 'HTTP_X_FORWARDED_FOR' in request.META:  # 获取ip
         client_ip = request.META['HTTP_X_FORWARDED_FOR']
         client_ip = client_ip.split(",")[0]  # 所以这里是真实的ip
+    elif 'X-Real-IP' in request.META:
+        client_ip = request.META['X-Real-IP']
     elif 'REMOTE_ADDR' in request.META:
         client_ip = request.META['REMOTE_ADDR']  # 这里获得代理ip
     else:
