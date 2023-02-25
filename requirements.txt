@@ -11,3 +11,4 @@ django-redis==5.2.0
 wagtailmath==1.2.0
 markdown == 3.3.6
 pygments
+django-dbbackup

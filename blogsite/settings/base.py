@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'likes',
     'visitor_record',
 
+    'dbbackup'
     'wagtailmath',
     'notifications',
     'ckeditor',
