@@ -7,7 +7,7 @@ from django.db.models.fields import exceptions
 #访问网站的ip地址和次数
 class Userip(models.Model):
     ip=models.CharField(verbose_name='IP地址',max_length=60)    #ip地址
-    location = models.CharField(verbose_name='地理位置', max_length=60) #地理位置
+    location = models.CharField(verbose_name='地理位置', max_length=100) #地理位置
     count=models.IntegerField(verbose_name='访问次数',default=0) #该ip访问次数
     class Meta:
         verbose_name = '访问用户信息'
