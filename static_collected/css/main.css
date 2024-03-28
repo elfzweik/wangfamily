@@ -2413,8 +2413,8 @@ header .logo a {
 
 #content-wrap .primary-content .blog-content img {
     max-width: 910px;
-    margin: 3rem 0 3rem -8%;
-    width: 116%;
+    margin: 3rem 0 3rem; /*-8%;*/
+    width: 100%;
 }
 
 #content-wrap .primary-content img.pull-right {
